@@ -16,6 +16,7 @@ import { Route as ToolsRotateRouteImport } from './routes/tools/rotate'
 import { Route as ToolsPageNumbersRouteImport } from './routes/tools/page-numbers'
 import { Route as ToolsOrganizeRouteImport } from './routes/tools/organize'
 import { Route as ToolsMergeRouteImport } from './routes/tools/merge'
+import { Route as ToolsJpgToPdfRouteImport } from './routes/tools/jpg-to-pdf'
 import { Route as ToolsCompressRouteImport } from './routes/tools/compress'
 
 const IndexRoute = IndexRouteImport.update({
@@ -53,6 +54,11 @@ const ToolsMergeRoute = ToolsMergeRouteImport.update({
   path: '/tools/merge',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ToolsJpgToPdfRoute = ToolsJpgToPdfRouteImport.update({
+  id: '/tools/jpg-to-pdf',
+  path: '/tools/jpg-to-pdf',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ToolsCompressRoute = ToolsCompressRouteImport.update({
   id: '/tools/compress',
   path: '/tools/compress',
@@ -62,6 +68,7 @@ const ToolsCompressRoute = ToolsCompressRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/tools/compress': typeof ToolsCompressRoute
+  '/tools/jpg-to-pdf': typeof ToolsJpgToPdfRoute
   '/tools/merge': typeof ToolsMergeRoute
   '/tools/organize': typeof ToolsOrganizeRoute
   '/tools/page-numbers': typeof ToolsPageNumbersRoute
@@ -72,6 +79,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/tools/compress': typeof ToolsCompressRoute
+  '/tools/jpg-to-pdf': typeof ToolsJpgToPdfRoute
   '/tools/merge': typeof ToolsMergeRoute
   '/tools/organize': typeof ToolsOrganizeRoute
   '/tools/page-numbers': typeof ToolsPageNumbersRoute
@@ -83,6 +91,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/tools/compress': typeof ToolsCompressRoute
+  '/tools/jpg-to-pdf': typeof ToolsJpgToPdfRoute
   '/tools/merge': typeof ToolsMergeRoute
   '/tools/organize': typeof ToolsOrganizeRoute
   '/tools/page-numbers': typeof ToolsPageNumbersRoute
@@ -95,6 +104,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/tools/compress'
+    | '/tools/jpg-to-pdf'
     | '/tools/merge'
     | '/tools/organize'
     | '/tools/page-numbers'
@@ -105,6 +115,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/tools/compress'
+    | '/tools/jpg-to-pdf'
     | '/tools/merge'
     | '/tools/organize'
     | '/tools/page-numbers'
@@ -115,6 +126,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/tools/compress'
+    | '/tools/jpg-to-pdf'
     | '/tools/merge'
     | '/tools/organize'
     | '/tools/page-numbers'
@@ -126,6 +138,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ToolsCompressRoute: typeof ToolsCompressRoute
+  ToolsJpgToPdfRoute: typeof ToolsJpgToPdfRoute
   ToolsMergeRoute: typeof ToolsMergeRoute
   ToolsOrganizeRoute: typeof ToolsOrganizeRoute
   ToolsPageNumbersRoute: typeof ToolsPageNumbersRoute
@@ -185,6 +198,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolsMergeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tools/jpg-to-pdf': {
+      id: '/tools/jpg-to-pdf'
+      path: '/tools/jpg-to-pdf'
+      fullPath: '/tools/jpg-to-pdf'
+      preLoaderRoute: typeof ToolsJpgToPdfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tools/compress': {
       id: '/tools/compress'
       path: '/tools/compress'
@@ -198,6 +218,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ToolsCompressRoute: ToolsCompressRoute,
+  ToolsJpgToPdfRoute: ToolsJpgToPdfRoute,
   ToolsMergeRoute: ToolsMergeRoute,
   ToolsOrganizeRoute: ToolsOrganizeRoute,
   ToolsPageNumbersRoute: ToolsPageNumbersRoute,
