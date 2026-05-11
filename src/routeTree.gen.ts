@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ToolsWatermarkRouteImport } from './routes/tools/watermark'
 import { Route as ToolsSplitRouteImport } from './routes/tools/split'
 import { Route as ToolsRotateRouteImport } from './routes/tools/rotate'
+import { Route as ToolsPageNumbersRouteImport } from './routes/tools/page-numbers'
 import { Route as ToolsMergeRouteImport } from './routes/tools/merge'
 import { Route as ToolsCompressRouteImport } from './routes/tools/compress'
 
@@ -36,6 +37,11 @@ const ToolsRotateRoute = ToolsRotateRouteImport.update({
   path: '/tools/rotate',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ToolsPageNumbersRoute = ToolsPageNumbersRouteImport.update({
+  id: '/tools/page-numbers',
+  path: '/tools/page-numbers',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ToolsMergeRoute = ToolsMergeRouteImport.update({
   id: '/tools/merge',
   path: '/tools/merge',
@@ -51,6 +57,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/tools/compress': typeof ToolsCompressRoute
   '/tools/merge': typeof ToolsMergeRoute
+  '/tools/page-numbers': typeof ToolsPageNumbersRoute
   '/tools/rotate': typeof ToolsRotateRoute
   '/tools/split': typeof ToolsSplitRoute
   '/tools/watermark': typeof ToolsWatermarkRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/tools/compress': typeof ToolsCompressRoute
   '/tools/merge': typeof ToolsMergeRoute
+  '/tools/page-numbers': typeof ToolsPageNumbersRoute
   '/tools/rotate': typeof ToolsRotateRoute
   '/tools/split': typeof ToolsSplitRoute
   '/tools/watermark': typeof ToolsWatermarkRoute
@@ -68,6 +76,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/tools/compress': typeof ToolsCompressRoute
   '/tools/merge': typeof ToolsMergeRoute
+  '/tools/page-numbers': typeof ToolsPageNumbersRoute
   '/tools/rotate': typeof ToolsRotateRoute
   '/tools/split': typeof ToolsSplitRoute
   '/tools/watermark': typeof ToolsWatermarkRoute
@@ -78,6 +87,7 @@ export interface FileRouteTypes {
     | '/'
     | '/tools/compress'
     | '/tools/merge'
+    | '/tools/page-numbers'
     | '/tools/rotate'
     | '/tools/split'
     | '/tools/watermark'
@@ -86,6 +96,7 @@ export interface FileRouteTypes {
     | '/'
     | '/tools/compress'
     | '/tools/merge'
+    | '/tools/page-numbers'
     | '/tools/rotate'
     | '/tools/split'
     | '/tools/watermark'
@@ -94,6 +105,7 @@ export interface FileRouteTypes {
     | '/'
     | '/tools/compress'
     | '/tools/merge'
+    | '/tools/page-numbers'
     | '/tools/rotate'
     | '/tools/split'
     | '/tools/watermark'
@@ -103,6 +115,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ToolsCompressRoute: typeof ToolsCompressRoute
   ToolsMergeRoute: typeof ToolsMergeRoute
+  ToolsPageNumbersRoute: typeof ToolsPageNumbersRoute
   ToolsRotateRoute: typeof ToolsRotateRoute
   ToolsSplitRoute: typeof ToolsSplitRoute
   ToolsWatermarkRoute: typeof ToolsWatermarkRoute
@@ -138,6 +151,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolsRotateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tools/page-numbers': {
+      id: '/tools/page-numbers'
+      path: '/tools/page-numbers'
+      fullPath: '/tools/page-numbers'
+      preLoaderRoute: typeof ToolsPageNumbersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tools/merge': {
       id: '/tools/merge'
       path: '/tools/merge'
@@ -159,6 +179,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ToolsCompressRoute: ToolsCompressRoute,
   ToolsMergeRoute: ToolsMergeRoute,
+  ToolsPageNumbersRoute: ToolsPageNumbersRoute,
   ToolsRotateRoute: ToolsRotateRoute,
   ToolsSplitRoute: ToolsSplitRoute,
   ToolsWatermarkRoute: ToolsWatermarkRoute,
