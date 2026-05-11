@@ -1,0 +1,114 @@
+import i18n from "i18next";
+import { initReactI18next } from "react-i18next";
+
+const resources = {
+  es: {
+    translation: {
+      appName: "PDF Studio",
+      tagline: "Tu suite PDF profesional, 100% en tu navegador",
+      back: "Volver",
+      dashboard: "Inicio",
+      dropHere: "Suelta archivos aquí o haz clic para seleccionar",
+      selectFiles: "Seleccionar archivos",
+      processing: "Procesando…",
+      download: "Descargar",
+      remove: "Quitar",
+      clear: "Limpiar",
+      page: "Página",
+      pages: "Páginas",
+      run: "Ejecutar",
+      success: "Listo",
+      error: "Error",
+      darkMode: "Tema oscuro",
+      language: "Idioma",
+      categories: {
+        organize: "Organizar",
+        optimize: "Optimizar",
+        convert: "Convertir",
+        edit: "Editar",
+        security: "Seguridad",
+      },
+      tools: {
+        merge: { title: "Unir PDF", desc: "Combina múltiples PDF en uno solo" },
+        split: { title: "Dividir PDF", desc: "Extrae páginas o rangos a archivos nuevos" },
+        compress: { title: "Comprimir PDF", desc: "Reduce el tamaño optimizando contenido" },
+        rotate: { title: "Rotar PDF", desc: "Gira páginas 90/180/270 grados" },
+        organize: { title: "Organizar páginas", desc: "Reordena, elimina y previsualiza" },
+        watermark: { title: "Marca de agua", desc: "Texto sobre tus páginas, configurable" },
+        pageNumbers: { title: "Numerar páginas", desc: "Añade números de página personalizados" },
+        jpgToPdf: { title: "JPG a PDF", desc: "Convierte imágenes a un único PDF" },
+        pdfToJpg: { title: "PDF a JPG", desc: "Extrae cada página como imagen" },
+        ocr: { title: "OCR (texto desde escaneo)", desc: "Reconoce texto en PDFs e imágenes" },
+      },
+      merge: { hint: "Arrastra para reordenar antes de unir" },
+      split: { ranges: "Rangos (ej: 1-3,5,7-9)", split: "Dividir" },
+      compress: { level: "Nivel", low: "Bajo", medium: "Medio", high: "Alto", note: "Compresión aproximada vía recompresión de imágenes y limpieza de metadatos." },
+      rotate: { angle: "Ángulo" },
+      watermark: { text: "Texto", opacity: "Opacidad", angle: "Rotación", size: "Tamaño" },
+      pageNumbers: { position: "Posición", format: "Formato", start: "Inicio" },
+      ocr: { lang: "Idioma OCR", spanish: "Español", english: "Inglés", copy: "Copiar texto", downloadTxt: "Descargar .txt" },
+      nativeTools: "Algunas herramientas avanzadas (Word/Excel/PPT, firma con certificado, reparar PDFs muy dañados) requieren un backend nativo y no están disponibles en la web. Lo demás funciona 100% offline.",
+    },
+  },
+  en: {
+    translation: {
+      appName: "PDF Studio",
+      tagline: "Your professional PDF suite, 100% in your browser",
+      back: "Back",
+      dashboard: "Home",
+      dropHere: "Drop files here or click to select",
+      selectFiles: "Select files",
+      processing: "Processing…",
+      download: "Download",
+      remove: "Remove",
+      clear: "Clear",
+      page: "Page",
+      pages: "Pages",
+      run: "Run",
+      success: "Done",
+      error: "Error",
+      darkMode: "Dark theme",
+      language: "Language",
+      categories: {
+        organize: "Organize",
+        optimize: "Optimize",
+        convert: "Convert",
+        edit: "Edit",
+        security: "Security",
+      },
+      tools: {
+        merge: { title: "Merge PDF", desc: "Combine multiple PDFs into one" },
+        split: { title: "Split PDF", desc: "Extract pages or ranges to new files" },
+        compress: { title: "Compress PDF", desc: "Reduce size by optimizing content" },
+        rotate: { title: "Rotate PDF", desc: "Rotate pages 90/180/270 degrees" },
+        organize: { title: "Organize pages", desc: "Reorder, delete and preview" },
+        watermark: { title: "Watermark", desc: "Text over your pages, configurable" },
+        pageNumbers: { title: "Page numbers", desc: "Add custom page numbers" },
+        jpgToPdf: { title: "JPG to PDF", desc: "Convert images into a single PDF" },
+        pdfToJpg: { title: "PDF to JPG", desc: "Export each page as an image" },
+        ocr: { title: "OCR (text from scans)", desc: "Recognize text in PDFs and images" },
+      },
+      merge: { hint: "Drag to reorder before merging" },
+      split: { ranges: "Ranges (e.g. 1-3,5,7-9)", split: "Split" },
+      compress: { level: "Level", low: "Low", medium: "Medium", high: "High", note: "Approximate compression via image re-encode and metadata cleanup." },
+      rotate: { angle: "Angle" },
+      watermark: { text: "Text", opacity: "Opacity", angle: "Rotation", size: "Size" },
+      pageNumbers: { position: "Position", format: "Format", start: "Start" },
+      ocr: { lang: "OCR language", spanish: "Spanish", english: "English", copy: "Copy text", downloadTxt: "Download .txt" },
+      nativeTools: "Some advanced tools (Word/Excel/PPT, certificate signing, repair of heavily damaged PDFs) require a native backend and aren't available in the web. Everything else runs 100% offline.",
+    },
+  },
+};
+
+if (!i18n.isInitialized) {
+  const stored = typeof window !== "undefined" ? localStorage.getItem("pdf-lang") : null;
+  const browser = typeof navigator !== "undefined" && navigator.language?.startsWith("es") ? "es" : "en";
+  i18n.use(initReactI18next).init({
+    resources,
+    lng: stored || browser,
+    fallbackLng: "en",
+    interpolation: { escapeValue: false },
+  });
+}
+
+export default i18n;

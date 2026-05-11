@@ -10,33 +10,167 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ToolsWatermarkRouteImport } from './routes/tools/watermark'
+import { Route as ToolsSplitRouteImport } from './routes/tools/split'
+import { Route as ToolsRotateRouteImport } from './routes/tools/rotate'
+import { Route as ToolsPdfToJpgRouteImport } from './routes/tools/pdf-to-jpg'
+import { Route as ToolsPageNumbersRouteImport } from './routes/tools/page-numbers'
+import { Route as ToolsOrganizeRouteImport } from './routes/tools/organize'
+import { Route as ToolsOcrRouteImport } from './routes/tools/ocr'
+import { Route as ToolsMergeRouteImport } from './routes/tools/merge'
+import { Route as ToolsJpgToPdfRouteImport } from './routes/tools/jpg-to-pdf'
+import { Route as ToolsCompressRouteImport } from './routes/tools/compress'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ToolsWatermarkRoute = ToolsWatermarkRouteImport.update({
+  id: '/tools/watermark',
+  path: '/tools/watermark',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsSplitRoute = ToolsSplitRouteImport.update({
+  id: '/tools/split',
+  path: '/tools/split',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsRotateRoute = ToolsRotateRouteImport.update({
+  id: '/tools/rotate',
+  path: '/tools/rotate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsPdfToJpgRoute = ToolsPdfToJpgRouteImport.update({
+  id: '/tools/pdf-to-jpg',
+  path: '/tools/pdf-to-jpg',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsPageNumbersRoute = ToolsPageNumbersRouteImport.update({
+  id: '/tools/page-numbers',
+  path: '/tools/page-numbers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsOrganizeRoute = ToolsOrganizeRouteImport.update({
+  id: '/tools/organize',
+  path: '/tools/organize',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsOcrRoute = ToolsOcrRouteImport.update({
+  id: '/tools/ocr',
+  path: '/tools/ocr',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsMergeRoute = ToolsMergeRouteImport.update({
+  id: '/tools/merge',
+  path: '/tools/merge',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsJpgToPdfRoute = ToolsJpgToPdfRouteImport.update({
+  id: '/tools/jpg-to-pdf',
+  path: '/tools/jpg-to-pdf',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsCompressRoute = ToolsCompressRouteImport.update({
+  id: '/tools/compress',
+  path: '/tools/compress',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/tools/compress': typeof ToolsCompressRoute
+  '/tools/jpg-to-pdf': typeof ToolsJpgToPdfRoute
+  '/tools/merge': typeof ToolsMergeRoute
+  '/tools/ocr': typeof ToolsOcrRoute
+  '/tools/organize': typeof ToolsOrganizeRoute
+  '/tools/page-numbers': typeof ToolsPageNumbersRoute
+  '/tools/pdf-to-jpg': typeof ToolsPdfToJpgRoute
+  '/tools/rotate': typeof ToolsRotateRoute
+  '/tools/split': typeof ToolsSplitRoute
+  '/tools/watermark': typeof ToolsWatermarkRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/tools/compress': typeof ToolsCompressRoute
+  '/tools/jpg-to-pdf': typeof ToolsJpgToPdfRoute
+  '/tools/merge': typeof ToolsMergeRoute
+  '/tools/ocr': typeof ToolsOcrRoute
+  '/tools/organize': typeof ToolsOrganizeRoute
+  '/tools/page-numbers': typeof ToolsPageNumbersRoute
+  '/tools/pdf-to-jpg': typeof ToolsPdfToJpgRoute
+  '/tools/rotate': typeof ToolsRotateRoute
+  '/tools/split': typeof ToolsSplitRoute
+  '/tools/watermark': typeof ToolsWatermarkRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/tools/compress': typeof ToolsCompressRoute
+  '/tools/jpg-to-pdf': typeof ToolsJpgToPdfRoute
+  '/tools/merge': typeof ToolsMergeRoute
+  '/tools/ocr': typeof ToolsOcrRoute
+  '/tools/organize': typeof ToolsOrganizeRoute
+  '/tools/page-numbers': typeof ToolsPageNumbersRoute
+  '/tools/pdf-to-jpg': typeof ToolsPdfToJpgRoute
+  '/tools/rotate': typeof ToolsRotateRoute
+  '/tools/split': typeof ToolsSplitRoute
+  '/tools/watermark': typeof ToolsWatermarkRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/tools/compress'
+    | '/tools/jpg-to-pdf'
+    | '/tools/merge'
+    | '/tools/ocr'
+    | '/tools/organize'
+    | '/tools/page-numbers'
+    | '/tools/pdf-to-jpg'
+    | '/tools/rotate'
+    | '/tools/split'
+    | '/tools/watermark'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/tools/compress'
+    | '/tools/jpg-to-pdf'
+    | '/tools/merge'
+    | '/tools/ocr'
+    | '/tools/organize'
+    | '/tools/page-numbers'
+    | '/tools/pdf-to-jpg'
+    | '/tools/rotate'
+    | '/tools/split'
+    | '/tools/watermark'
+  id:
+    | '__root__'
+    | '/'
+    | '/tools/compress'
+    | '/tools/jpg-to-pdf'
+    | '/tools/merge'
+    | '/tools/ocr'
+    | '/tools/organize'
+    | '/tools/page-numbers'
+    | '/tools/pdf-to-jpg'
+    | '/tools/rotate'
+    | '/tools/split'
+    | '/tools/watermark'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ToolsCompressRoute: typeof ToolsCompressRoute
+  ToolsJpgToPdfRoute: typeof ToolsJpgToPdfRoute
+  ToolsMergeRoute: typeof ToolsMergeRoute
+  ToolsOcrRoute: typeof ToolsOcrRoute
+  ToolsOrganizeRoute: typeof ToolsOrganizeRoute
+  ToolsPageNumbersRoute: typeof ToolsPageNumbersRoute
+  ToolsPdfToJpgRoute: typeof ToolsPdfToJpgRoute
+  ToolsRotateRoute: typeof ToolsRotateRoute
+  ToolsSplitRoute: typeof ToolsSplitRoute
+  ToolsWatermarkRoute: typeof ToolsWatermarkRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,22 +182,92 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tools/watermark': {
+      id: '/tools/watermark'
+      path: '/tools/watermark'
+      fullPath: '/tools/watermark'
+      preLoaderRoute: typeof ToolsWatermarkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/split': {
+      id: '/tools/split'
+      path: '/tools/split'
+      fullPath: '/tools/split'
+      preLoaderRoute: typeof ToolsSplitRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/rotate': {
+      id: '/tools/rotate'
+      path: '/tools/rotate'
+      fullPath: '/tools/rotate'
+      preLoaderRoute: typeof ToolsRotateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/pdf-to-jpg': {
+      id: '/tools/pdf-to-jpg'
+      path: '/tools/pdf-to-jpg'
+      fullPath: '/tools/pdf-to-jpg'
+      preLoaderRoute: typeof ToolsPdfToJpgRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/page-numbers': {
+      id: '/tools/page-numbers'
+      path: '/tools/page-numbers'
+      fullPath: '/tools/page-numbers'
+      preLoaderRoute: typeof ToolsPageNumbersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/organize': {
+      id: '/tools/organize'
+      path: '/tools/organize'
+      fullPath: '/tools/organize'
+      preLoaderRoute: typeof ToolsOrganizeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/ocr': {
+      id: '/tools/ocr'
+      path: '/tools/ocr'
+      fullPath: '/tools/ocr'
+      preLoaderRoute: typeof ToolsOcrRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/merge': {
+      id: '/tools/merge'
+      path: '/tools/merge'
+      fullPath: '/tools/merge'
+      preLoaderRoute: typeof ToolsMergeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/jpg-to-pdf': {
+      id: '/tools/jpg-to-pdf'
+      path: '/tools/jpg-to-pdf'
+      fullPath: '/tools/jpg-to-pdf'
+      preLoaderRoute: typeof ToolsJpgToPdfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/compress': {
+      id: '/tools/compress'
+      path: '/tools/compress'
+      fullPath: '/tools/compress'
+      preLoaderRoute: typeof ToolsCompressRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ToolsCompressRoute: ToolsCompressRoute,
+  ToolsJpgToPdfRoute: ToolsJpgToPdfRoute,
+  ToolsMergeRoute: ToolsMergeRoute,
+  ToolsOcrRoute: ToolsOcrRoute,
+  ToolsOrganizeRoute: ToolsOrganizeRoute,
+  ToolsPageNumbersRoute: ToolsPageNumbersRoute,
+  ToolsPdfToJpgRoute: ToolsPdfToJpgRoute,
+  ToolsRotateRoute: ToolsRotateRoute,
+  ToolsSplitRoute: ToolsSplitRoute,
+  ToolsWatermarkRoute: ToolsWatermarkRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
