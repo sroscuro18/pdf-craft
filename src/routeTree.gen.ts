@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ToolsWatermarkRouteImport } from './routes/tools/watermark'
 import { Route as ToolsSplitRouteImport } from './routes/tools/split'
 import { Route as ToolsRotateRouteImport } from './routes/tools/rotate'
+import { Route as ToolsPdfToJpgRouteImport } from './routes/tools/pdf-to-jpg'
 import { Route as ToolsPageNumbersRouteImport } from './routes/tools/page-numbers'
 import { Route as ToolsOrganizeRouteImport } from './routes/tools/organize'
 import { Route as ToolsMergeRouteImport } from './routes/tools/merge'
@@ -37,6 +38,11 @@ const ToolsSplitRoute = ToolsSplitRouteImport.update({
 const ToolsRotateRoute = ToolsRotateRouteImport.update({
   id: '/tools/rotate',
   path: '/tools/rotate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsPdfToJpgRoute = ToolsPdfToJpgRouteImport.update({
+  id: '/tools/pdf-to-jpg',
+  path: '/tools/pdf-to-jpg',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ToolsPageNumbersRoute = ToolsPageNumbersRouteImport.update({
@@ -72,6 +78,7 @@ export interface FileRoutesByFullPath {
   '/tools/merge': typeof ToolsMergeRoute
   '/tools/organize': typeof ToolsOrganizeRoute
   '/tools/page-numbers': typeof ToolsPageNumbersRoute
+  '/tools/pdf-to-jpg': typeof ToolsPdfToJpgRoute
   '/tools/rotate': typeof ToolsRotateRoute
   '/tools/split': typeof ToolsSplitRoute
   '/tools/watermark': typeof ToolsWatermarkRoute
@@ -83,6 +90,7 @@ export interface FileRoutesByTo {
   '/tools/merge': typeof ToolsMergeRoute
   '/tools/organize': typeof ToolsOrganizeRoute
   '/tools/page-numbers': typeof ToolsPageNumbersRoute
+  '/tools/pdf-to-jpg': typeof ToolsPdfToJpgRoute
   '/tools/rotate': typeof ToolsRotateRoute
   '/tools/split': typeof ToolsSplitRoute
   '/tools/watermark': typeof ToolsWatermarkRoute
@@ -95,6 +103,7 @@ export interface FileRoutesById {
   '/tools/merge': typeof ToolsMergeRoute
   '/tools/organize': typeof ToolsOrganizeRoute
   '/tools/page-numbers': typeof ToolsPageNumbersRoute
+  '/tools/pdf-to-jpg': typeof ToolsPdfToJpgRoute
   '/tools/rotate': typeof ToolsRotateRoute
   '/tools/split': typeof ToolsSplitRoute
   '/tools/watermark': typeof ToolsWatermarkRoute
@@ -108,6 +117,7 @@ export interface FileRouteTypes {
     | '/tools/merge'
     | '/tools/organize'
     | '/tools/page-numbers'
+    | '/tools/pdf-to-jpg'
     | '/tools/rotate'
     | '/tools/split'
     | '/tools/watermark'
@@ -119,6 +129,7 @@ export interface FileRouteTypes {
     | '/tools/merge'
     | '/tools/organize'
     | '/tools/page-numbers'
+    | '/tools/pdf-to-jpg'
     | '/tools/rotate'
     | '/tools/split'
     | '/tools/watermark'
@@ -130,6 +141,7 @@ export interface FileRouteTypes {
     | '/tools/merge'
     | '/tools/organize'
     | '/tools/page-numbers'
+    | '/tools/pdf-to-jpg'
     | '/tools/rotate'
     | '/tools/split'
     | '/tools/watermark'
@@ -142,6 +154,7 @@ export interface RootRouteChildren {
   ToolsMergeRoute: typeof ToolsMergeRoute
   ToolsOrganizeRoute: typeof ToolsOrganizeRoute
   ToolsPageNumbersRoute: typeof ToolsPageNumbersRoute
+  ToolsPdfToJpgRoute: typeof ToolsPdfToJpgRoute
   ToolsRotateRoute: typeof ToolsRotateRoute
   ToolsSplitRoute: typeof ToolsSplitRoute
   ToolsWatermarkRoute: typeof ToolsWatermarkRoute
@@ -175,6 +188,13 @@ declare module '@tanstack/react-router' {
       path: '/tools/rotate'
       fullPath: '/tools/rotate'
       preLoaderRoute: typeof ToolsRotateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/pdf-to-jpg': {
+      id: '/tools/pdf-to-jpg'
+      path: '/tools/pdf-to-jpg'
+      fullPath: '/tools/pdf-to-jpg'
+      preLoaderRoute: typeof ToolsPdfToJpgRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tools/page-numbers': {
@@ -222,6 +242,7 @@ const rootRouteChildren: RootRouteChildren = {
   ToolsMergeRoute: ToolsMergeRoute,
   ToolsOrganizeRoute: ToolsOrganizeRoute,
   ToolsPageNumbersRoute: ToolsPageNumbersRoute,
+  ToolsPdfToJpgRoute: ToolsPdfToJpgRoute,
   ToolsRotateRoute: ToolsRotateRoute,
   ToolsSplitRoute: ToolsSplitRoute,
   ToolsWatermarkRoute: ToolsWatermarkRoute,
@@ -229,3 +250,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
