@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ToolsSplitRouteImport } from './routes/tools/split'
 import { Route as ToolsMergeRouteImport } from './routes/tools/merge'
+import { Route as ToolsCompressRouteImport } from './routes/tools/compress'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -28,33 +29,42 @@ const ToolsMergeRoute = ToolsMergeRouteImport.update({
   path: '/tools/merge',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ToolsCompressRoute = ToolsCompressRouteImport.update({
+  id: '/tools/compress',
+  path: '/tools/compress',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/tools/compress': typeof ToolsCompressRoute
   '/tools/merge': typeof ToolsMergeRoute
   '/tools/split': typeof ToolsSplitRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/tools/compress': typeof ToolsCompressRoute
   '/tools/merge': typeof ToolsMergeRoute
   '/tools/split': typeof ToolsSplitRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/tools/compress': typeof ToolsCompressRoute
   '/tools/merge': typeof ToolsMergeRoute
   '/tools/split': typeof ToolsSplitRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/tools/merge' | '/tools/split'
+  fullPaths: '/' | '/tools/compress' | '/tools/merge' | '/tools/split'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/tools/merge' | '/tools/split'
-  id: '__root__' | '/' | '/tools/merge' | '/tools/split'
+  to: '/' | '/tools/compress' | '/tools/merge' | '/tools/split'
+  id: '__root__' | '/' | '/tools/compress' | '/tools/merge' | '/tools/split'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ToolsCompressRoute: typeof ToolsCompressRoute
   ToolsMergeRoute: typeof ToolsMergeRoute
   ToolsSplitRoute: typeof ToolsSplitRoute
 }
@@ -82,11 +92,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolsMergeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tools/compress': {
+      id: '/tools/compress'
+      path: '/tools/compress'
+      fullPath: '/tools/compress'
+      preLoaderRoute: typeof ToolsCompressRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ToolsCompressRoute: ToolsCompressRoute,
   ToolsMergeRoute: ToolsMergeRoute,
   ToolsSplitRoute: ToolsSplitRoute,
 }
