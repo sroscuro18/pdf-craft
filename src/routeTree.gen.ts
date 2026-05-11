@@ -16,6 +16,7 @@ import { Route as ToolsRotateRouteImport } from './routes/tools/rotate'
 import { Route as ToolsPdfToJpgRouteImport } from './routes/tools/pdf-to-jpg'
 import { Route as ToolsPageNumbersRouteImport } from './routes/tools/page-numbers'
 import { Route as ToolsOrganizeRouteImport } from './routes/tools/organize'
+import { Route as ToolsOcrRouteImport } from './routes/tools/ocr'
 import { Route as ToolsMergeRouteImport } from './routes/tools/merge'
 import { Route as ToolsJpgToPdfRouteImport } from './routes/tools/jpg-to-pdf'
 import { Route as ToolsCompressRouteImport } from './routes/tools/compress'
@@ -55,6 +56,11 @@ const ToolsOrganizeRoute = ToolsOrganizeRouteImport.update({
   path: '/tools/organize',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ToolsOcrRoute = ToolsOcrRouteImport.update({
+  id: '/tools/ocr',
+  path: '/tools/ocr',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ToolsMergeRoute = ToolsMergeRouteImport.update({
   id: '/tools/merge',
   path: '/tools/merge',
@@ -76,6 +82,7 @@ export interface FileRoutesByFullPath {
   '/tools/compress': typeof ToolsCompressRoute
   '/tools/jpg-to-pdf': typeof ToolsJpgToPdfRoute
   '/tools/merge': typeof ToolsMergeRoute
+  '/tools/ocr': typeof ToolsOcrRoute
   '/tools/organize': typeof ToolsOrganizeRoute
   '/tools/page-numbers': typeof ToolsPageNumbersRoute
   '/tools/pdf-to-jpg': typeof ToolsPdfToJpgRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/tools/compress': typeof ToolsCompressRoute
   '/tools/jpg-to-pdf': typeof ToolsJpgToPdfRoute
   '/tools/merge': typeof ToolsMergeRoute
+  '/tools/ocr': typeof ToolsOcrRoute
   '/tools/organize': typeof ToolsOrganizeRoute
   '/tools/page-numbers': typeof ToolsPageNumbersRoute
   '/tools/pdf-to-jpg': typeof ToolsPdfToJpgRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/tools/compress': typeof ToolsCompressRoute
   '/tools/jpg-to-pdf': typeof ToolsJpgToPdfRoute
   '/tools/merge': typeof ToolsMergeRoute
+  '/tools/ocr': typeof ToolsOcrRoute
   '/tools/organize': typeof ToolsOrganizeRoute
   '/tools/page-numbers': typeof ToolsPageNumbersRoute
   '/tools/pdf-to-jpg': typeof ToolsPdfToJpgRoute
@@ -115,6 +124,7 @@ export interface FileRouteTypes {
     | '/tools/compress'
     | '/tools/jpg-to-pdf'
     | '/tools/merge'
+    | '/tools/ocr'
     | '/tools/organize'
     | '/tools/page-numbers'
     | '/tools/pdf-to-jpg'
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/tools/compress'
     | '/tools/jpg-to-pdf'
     | '/tools/merge'
+    | '/tools/ocr'
     | '/tools/organize'
     | '/tools/page-numbers'
     | '/tools/pdf-to-jpg'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/tools/compress'
     | '/tools/jpg-to-pdf'
     | '/tools/merge'
+    | '/tools/ocr'
     | '/tools/organize'
     | '/tools/page-numbers'
     | '/tools/pdf-to-jpg'
@@ -152,6 +164,7 @@ export interface RootRouteChildren {
   ToolsCompressRoute: typeof ToolsCompressRoute
   ToolsJpgToPdfRoute: typeof ToolsJpgToPdfRoute
   ToolsMergeRoute: typeof ToolsMergeRoute
+  ToolsOcrRoute: typeof ToolsOcrRoute
   ToolsOrganizeRoute: typeof ToolsOrganizeRoute
   ToolsPageNumbersRoute: typeof ToolsPageNumbersRoute
   ToolsPdfToJpgRoute: typeof ToolsPdfToJpgRoute
@@ -211,6 +224,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolsOrganizeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tools/ocr': {
+      id: '/tools/ocr'
+      path: '/tools/ocr'
+      fullPath: '/tools/ocr'
+      preLoaderRoute: typeof ToolsOcrRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tools/merge': {
       id: '/tools/merge'
       path: '/tools/merge'
@@ -240,6 +260,7 @@ const rootRouteChildren: RootRouteChildren = {
   ToolsCompressRoute: ToolsCompressRoute,
   ToolsJpgToPdfRoute: ToolsJpgToPdfRoute,
   ToolsMergeRoute: ToolsMergeRoute,
+  ToolsOcrRoute: ToolsOcrRoute,
   ToolsOrganizeRoute: ToolsOrganizeRoute,
   ToolsPageNumbersRoute: ToolsPageNumbersRoute,
   ToolsPdfToJpgRoute: ToolsPdfToJpgRoute,
