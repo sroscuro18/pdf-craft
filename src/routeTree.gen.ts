@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ToolsWatermarkRouteImport } from './routes/tools/watermark'
 import { Route as ToolsSplitRouteImport } from './routes/tools/split'
 import { Route as ToolsRotateRouteImport } from './routes/tools/rotate'
 import { Route as ToolsMergeRouteImport } from './routes/tools/merge'
@@ -18,6 +19,11 @@ import { Route as ToolsCompressRouteImport } from './routes/tools/compress'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsWatermarkRoute = ToolsWatermarkRouteImport.update({
+  id: '/tools/watermark',
+  path: '/tools/watermark',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ToolsSplitRoute = ToolsSplitRouteImport.update({
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/tools/merge': typeof ToolsMergeRoute
   '/tools/rotate': typeof ToolsRotateRoute
   '/tools/split': typeof ToolsSplitRoute
+  '/tools/watermark': typeof ToolsWatermarkRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/tools/merge': typeof ToolsMergeRoute
   '/tools/rotate': typeof ToolsRotateRoute
   '/tools/split': typeof ToolsSplitRoute
+  '/tools/watermark': typeof ToolsWatermarkRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,6 +70,7 @@ export interface FileRoutesById {
   '/tools/merge': typeof ToolsMergeRoute
   '/tools/rotate': typeof ToolsRotateRoute
   '/tools/split': typeof ToolsSplitRoute
+  '/tools/watermark': typeof ToolsWatermarkRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -71,6 +80,7 @@ export interface FileRouteTypes {
     | '/tools/merge'
     | '/tools/rotate'
     | '/tools/split'
+    | '/tools/watermark'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -78,6 +88,7 @@ export interface FileRouteTypes {
     | '/tools/merge'
     | '/tools/rotate'
     | '/tools/split'
+    | '/tools/watermark'
   id:
     | '__root__'
     | '/'
@@ -85,6 +96,7 @@ export interface FileRouteTypes {
     | '/tools/merge'
     | '/tools/rotate'
     | '/tools/split'
+    | '/tools/watermark'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -93,6 +105,7 @@ export interface RootRouteChildren {
   ToolsMergeRoute: typeof ToolsMergeRoute
   ToolsRotateRoute: typeof ToolsRotateRoute
   ToolsSplitRoute: typeof ToolsSplitRoute
+  ToolsWatermarkRoute: typeof ToolsWatermarkRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -102,6 +115,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/watermark': {
+      id: '/tools/watermark'
+      path: '/tools/watermark'
+      fullPath: '/tools/watermark'
+      preLoaderRoute: typeof ToolsWatermarkRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tools/split': {
@@ -141,6 +161,7 @@ const rootRouteChildren: RootRouteChildren = {
   ToolsMergeRoute: ToolsMergeRoute,
   ToolsRotateRoute: ToolsRotateRoute,
   ToolsSplitRoute: ToolsSplitRoute,
+  ToolsWatermarkRoute: ToolsWatermarkRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
