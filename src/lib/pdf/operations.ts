@@ -207,3 +207,134 @@ export async function compressPdf(
   // Devuelve la versión más pequeña
   return recompressed.length < cleaned.length ? recompressed : cleaned;
 }
+
+/* ============================================================
+ * Annotations (pen + highlighter)
+ * Strokes are stored in PDF user-space units (origin bottom-left).
+ * ============================================================ */
+export type Stroke = {
+  pageIndex: number;
+  tool: "pen" | "highlighter";
+  color: { r: number; g: number; b: number };
+  width: number; // pt
+  opacity: number;
+  points: { x: number; y: number }[]; // PDF coords
+};
+
+export async function applyAnnotations(file: File, strokes: Stroke[]): Promise<Uint8Array> {
+  const doc = await PDFDocument.load(await file.arrayBuffer());
+  const pages = doc.getPages();
+  for (const s of strokes) {
+    const page = pages[s.pageIndex];
+    if (!page || s.points.length < 2) continue;
+    const color = rgb(s.color.r, s.color.g, s.color.b);
+    for (let i = 1; i < s.points.length; i++) {
+      const a = s.points[i - 1];
+      const b = s.points[i];
+      page.drawLine({
+        start: { x: a.x, y: a.y },
+        end: { x: b.x, y: b.y },
+        thickness: s.width,
+        color,
+        opacity: s.opacity,
+        lineCap: 1,
+      });
+    }
+  }
+  return doc.save();
+}
+
+/* ============================================================
+ * Text block editing
+ * Detected via PDF.js getTextContent. Edits replace original
+ * region with a white rectangle and redraw modified text.
+ * ============================================================ */
+export type TextBlock = {
+  id: string;
+  pageIndex: number;
+  text: string;
+  x: number; // PDF coords (bottom-left of block)
+  y: number;
+  width: number;
+  height: number;
+  fontSize: number;
+};
+
+export type TextEdit =
+  | { id: string; type: "delete" }
+  | { id: string; type: "update"; text: string; x: number; y: number };
+
+export async function applyTextEdits(
+  file: File,
+  blocks: TextBlock[],
+  edits: TextEdit[],
+): Promise<Uint8Array> {
+  const doc = await PDFDocument.load(await file.arrayBuffer());
+  const font = await doc.embedFont(StandardFonts.Helvetica);
+  const pages = doc.getPages();
+  const editMap = new Map(edits.map((e) => [e.id, e]));
+  for (const b of blocks) {
+    const e = editMap.get(b.id);
+    if (!e) continue;
+    const page = pages[b.pageIndex];
+    if (!page) continue;
+    // Cover original text with a white box
+    page.drawRectangle({
+      x: b.x - 1,
+      y: b.y - 2,
+      width: b.width + 2,
+      height: b.height + 4,
+      color: rgb(1, 1, 1),
+    });
+    if (e.type === "update" && e.text.trim()) {
+      page.drawText(e.text, {
+        x: e.x,
+        y: e.y,
+        size: b.fontSize,
+        font,
+        color: rgb(0, 0, 0),
+      });
+    }
+  }
+  return doc.save();
+}
+
+export async function extractTextBlocks(
+  file: File,
+): Promise<{ blocks: TextBlock[]; pageSizes: { width: number; height: number }[] }> {
+  const { getPdfJs } = await import("./pdfjs");
+  const pdfjs = await getPdfJs();
+  const buf = await file.arrayBuffer();
+  const pdf = await pdfjs.getDocument({ data: buf.slice(0) }).promise;
+  const blocks: TextBlock[] = [];
+  const pageSizes: { width: number; height: number }[] = [];
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const viewport = page.getViewport({ scale: 1 });
+    pageSizes.push({ width: viewport.width, height: viewport.height });
+    const content = await page.getTextContent();
+    let idx = 0;
+    for (const item of content.items as Array<{
+      str: string;
+      transform: number[];
+      width: number;
+      height: number;
+    }>) {
+      if (!item.str || !item.str.trim()) continue;
+      const [a, , , d, x, y] = item.transform;
+      const fontSize = Math.hypot(a, d) || item.height || 10;
+      blocks.push({
+        id: `p${i - 1}_${idx++}`,
+        pageIndex: i - 1,
+        text: item.str,
+        x,
+        y,
+        width: item.width,
+        height: fontSize,
+        fontSize,
+      });
+    }
+  }
+  await pdf.destroy();
+  return { blocks, pageSizes };
+}
