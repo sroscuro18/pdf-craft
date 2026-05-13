@@ -34,6 +34,7 @@ function AnnotateTool() {
   const overlayRef = useRef<HTMLCanvasElement>(null);
   const drawing = useRef(false);
   const currentStroke = useRef<Stroke | null>(null);
+  const currentKey = useRef<string | null>(null);
   const pageHeightRef = useRef(0);
 
   const preset = PRESETS[presetIdx];
@@ -106,6 +107,8 @@ function AnnotateTool() {
     drawing.current = true;
     overlayRef.current!.setPointerCapture(e.pointerId);
     const p = getPos(e);
+    const key = `s_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+    currentKey.current = key;
     currentStroke.current = {
       pageIndex,
       tool: preset.tool,
@@ -113,19 +116,23 @@ function AnnotateTool() {
       width: preset.width,
       opacity: preset.opacity,
       points: [p],
+      // @ts-expect-error tag
+      _key: key,
     };
+    setStrokes((prev) => [...prev, { ...currentStroke.current! }]);
   };
   const onMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
     if (!drawing.current || !currentStroke.current) return;
     currentStroke.current.points.push(getPos(e));
-    setStrokes((prev) => {
-      const others = prev.filter((s) => s !== currentStroke.current);
-      return [...others, { ...currentStroke.current! }];
-    });
+    const key = currentKey.current;
+    setStrokes((prev) =>
+      prev.map((s) => ((s as unknown as { _key: string })._key === key ? { ...currentStroke.current! } : s)),
+    );
   };
   const onUp = () => {
     drawing.current = false;
     currentStroke.current = null;
+    currentKey.current = null;
   };
 
   const undo = () => {
