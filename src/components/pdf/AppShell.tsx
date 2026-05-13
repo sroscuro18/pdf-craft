@@ -17,6 +17,12 @@ export function AppShell() {
     document.documentElement.classList.toggle("dark", on);
   }, []);
 
+  useEffect(() => {
+    const storedLang = localStorage.getItem("pdf-lang");
+    const lang = storedLang || (navigator.language?.startsWith("es") ? "es" : "en");
+    if (lang !== i18n.language) i18n.changeLanguage(lang);
+  }, [i18n]);
+
   const toggleTheme = () => {
     const next = !dark;
     setDark(next);
