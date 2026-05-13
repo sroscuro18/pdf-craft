@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Pencil, Highlighter, Eraser, ChevronLeft, ChevronRight, Save } from "lucide-react";
+import { Pencil, Highlighter, Eraser, ChevronLeft, ChevronRight, Save, MousePointer2, Trash2 } from "lucide-react";
 import { ToolShell } from "@/components/pdf/ToolShell";
 import { Dropzone } from "@/components/pdf/Dropzone";
 import { RunButton } from "@/components/pdf/RunButton";
@@ -11,6 +11,7 @@ import { applyAnnotations, downloadBlob, type Stroke } from "@/lib/pdf/operation
 export const Route = createFileRoute("/tools/annotate")({ component: AnnotateTool });
 
 type ToolMode = "pen" | "highlighter";
+type EditorMode = "draw" | "select";
 
 const PRESETS: { tool: ToolMode; color: string; rgb: [number, number, number]; width: number; opacity: number; label: string }[] = [
   { tool: "pen", color: "#111827", rgb: [0.07, 0.09, 0.15], width: 2, opacity: 1, label: "Bolígrafo negro" },
@@ -30,12 +31,15 @@ function AnnotateTool() {
   const [strokes, setStrokes] = useState<Stroke[]>([]);
   const [presetIdx, setPresetIdx] = useState(0);
   const [busy, setBusy] = useState(false);
+  const [mode, setMode] = useState<EditorMode>("draw");
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const baseRef = useRef<HTMLCanvasElement>(null);
   const overlayRef = useRef<HTMLCanvasElement>(null);
   const drawing = useRef(false);
   const currentStroke = useRef<Stroke | null>(null);
   const currentKey = useRef<string | null>(null);
   const pageHeightRef = useRef(0);
+  const dragRef = useRef<{ id: string; lastX: number; lastY: number } | null>(null);
 
   const preset = PRESETS[presetIdx];
 
@@ -69,6 +73,7 @@ function AnnotateTool() {
   }, [file, pageIndex, pageCount, scale]);
 
   useEffect(() => { redrawOverlay(); /* eslint-disable-next-line */ }, [strokes, pageIndex]);
+  useEffect(() => { redrawOverlay(); /* eslint-disable-next-line */ }, [selectedId]);
 
   function redrawOverlay() {
     const overlay = overlayRef.current;
@@ -93,6 +98,25 @@ function AnnotateTool() {
       });
       ctx.stroke();
       ctx.restore();
+      if (s.id && s.id === selectedId) {
+        // bounding box highlight
+        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+        for (const p of s.points) {
+          const cx = p.x * scale;
+          const cy = h - p.y * scale;
+          if (cx < minX) minX = cx;
+          if (cy < minY) minY = cy;
+          if (cx > maxX) maxX = cx;
+          if (cy > maxY) maxY = cy;
+        }
+        const pad = (s.width * scale) / 2 + 4;
+        ctx.save();
+        ctx.strokeStyle = "hsl(217 91% 60%)";
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([4, 4]);
+        ctx.strokeRect(minX - pad, minY - pad, maxX - minX + pad * 2, maxY - minY + pad * 2);
+        ctx.restore();
+      }
     }
   }
 
@@ -103,33 +127,86 @@ function AnnotateTool() {
     return { x: cx / scale, y: (pageHeightRef.current - cy) / scale };
   }
 
+  // Distance from point P to segment AB (in PDF coords)
+  function distToSegment(px: number, py: number, ax: number, ay: number, bx: number, by: number) {
+    const dx = bx - ax, dy = by - ay;
+    const len2 = dx * dx + dy * dy;
+    let t = len2 === 0 ? 0 : ((px - ax) * dx + (py - ay) * dy) / len2;
+    t = Math.max(0, Math.min(1, t));
+    const qx = ax + t * dx, qy = ay + t * dy;
+    return Math.hypot(px - qx, py - qy);
+  }
+
+  function hitTest(p: { x: number; y: number }): Stroke | null {
+    // search from topmost (last drawn) down
+    const pageStrokes = strokes.filter((s) => s.pageIndex === pageIndex);
+    for (let i = pageStrokes.length - 1; i >= 0; i--) {
+      const s = pageStrokes[i];
+      const tol = Math.max(s.width / 2, 6 / scale);
+      for (let j = 1; j < s.points.length; j++) {
+        const a = s.points[j - 1], b = s.points[j];
+        if (distToSegment(p.x, p.y, a.x, a.y, b.x, b.y) <= tol) return s;
+      }
+    }
+    return null;
+  }
+
   const onDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const p = getPos(e);
+    if (mode === "select") {
+      const hit = hitTest(p);
+      if (hit && hit.id) {
+        setSelectedId(hit.id);
+        dragRef.current = { id: hit.id, lastX: p.x, lastY: p.y };
+        overlayRef.current!.setPointerCapture(e.pointerId);
+      } else {
+        setSelectedId(null);
+      }
+      return;
+    }
     drawing.current = true;
     overlayRef.current!.setPointerCapture(e.pointerId);
-    const p = getPos(e);
     const key = `s_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
     currentKey.current = key;
     currentStroke.current = {
+      id: key,
       pageIndex,
       tool: preset.tool,
       color: { r: preset.rgb[0], g: preset.rgb[1], b: preset.rgb[2] },
       width: preset.width,
       opacity: preset.opacity,
       points: [p],
-      // @ts-expect-error tag
-      _key: key,
     };
     setStrokes((prev) => [...prev, { ...currentStroke.current! }]);
   };
   const onMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    if (mode === "select") {
+      if (!dragRef.current) return;
+      const p = getPos(e);
+      const dx = p.x - dragRef.current.lastX;
+      const dy = p.y - dragRef.current.lastY;
+      dragRef.current.lastX = p.x;
+      dragRef.current.lastY = p.y;
+      const id = dragRef.current.id;
+      setStrokes((prev) =>
+        prev.map((s) =>
+          s.id === id ? { ...s, points: s.points.map((pt) => ({ x: pt.x + dx, y: pt.y + dy })) } : s,
+        ),
+      );
+      return;
+    }
     if (!drawing.current || !currentStroke.current) return;
     currentStroke.current.points.push(getPos(e));
     const key = currentKey.current;
     setStrokes((prev) =>
-      prev.map((s) => ((s as unknown as { _key: string })._key === key ? { ...currentStroke.current! } : s)),
+      prev.map((s) => (s.id === key ? { ...currentStroke.current! } : s)),
     );
   };
   const onUp = () => {
+    if (mode === "select") {
+      dragRef.current = null;
+      return;
+    }
     drawing.current = false;
     currentStroke.current = null;
     currentKey.current = null;
@@ -144,6 +221,11 @@ function AnnotateTool() {
     });
   };
   const clearPage = () => setStrokes((prev) => prev.filter((s) => s.pageIndex !== pageIndex));
+  const deleteSelected = () => {
+    if (!selectedId) return;
+    setStrokes((prev) => prev.filter((s) => s.id !== selectedId));
+    setSelectedId(null);
+  };
 
   const save = async () => {
     if (!file) return;
@@ -163,13 +245,29 @@ function AnnotateTool() {
       ) : (
         <div className="space-y-4">
           <div className="flex flex-wrap items-center gap-2 rounded-xl border border-border bg-card p-3">
+            <div className="flex items-center gap-1 border-r border-border pr-2">
+              <button
+                onClick={() => setMode("select")}
+                title={t("annotate.select")}
+                className={`grid h-9 w-9 place-items-center rounded-md border ${mode === "select" ? "border-primary bg-primary/10 ring-2 ring-primary/30" : "border-border hover:bg-secondary"}`}
+              >
+                <MousePointer2 className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => { setMode("draw"); setSelectedId(null); }}
+                title={t("annotate.draw")}
+                className={`grid h-9 w-9 place-items-center rounded-md border ${mode === "draw" ? "border-primary bg-primary/10 ring-2 ring-primary/30" : "border-border hover:bg-secondary"}`}
+              >
+                <Pencil className="h-4 w-4" />
+              </button>
+            </div>
             <div className="flex items-center gap-1">
               {PRESETS.map((p, i) => (
                 <button
                   key={i}
-                  onClick={() => setPresetIdx(i)}
+                  onClick={() => { setPresetIdx(i); setMode("draw"); setSelectedId(null); }}
                   title={p.label}
-                  className={`grid h-9 w-9 place-items-center rounded-md border ${i === presetIdx ? "border-primary ring-2 ring-primary/30" : "border-border"}`}
+                  className={`grid h-9 w-9 place-items-center rounded-md border ${i === presetIdx && mode === "draw" ? "border-primary ring-2 ring-primary/30" : "border-border"}`}
                   style={{ background: p.tool === "highlighter" ? `${p.color}66` : p.color }}
                 >
                   {p.tool === "pen" ? <Pencil className="h-4 w-4 text-white mix-blend-difference" /> : <Highlighter className="h-4 w-4 text-white mix-blend-difference" />}
@@ -180,6 +278,12 @@ function AnnotateTool() {
               <button onClick={undo} className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm hover:bg-secondary">
                 {t("annotate.undo")}
               </button>
+              {mode === "select" && selectedId && (
+                <button onClick={deleteSelected} className="inline-flex items-center gap-1.5 rounded-md border border-destructive/40 bg-destructive/10 px-3 py-1.5 text-sm text-destructive hover:bg-destructive/20">
+                  <Trash2 className="h-4 w-4" />
+                  {t("remove")}
+                </button>
+              )}
               <button onClick={clearPage} className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm hover:bg-secondary">
                 <Eraser className="h-4 w-4" />
                 {t("annotate.clearPage")}
@@ -208,7 +312,7 @@ function AnnotateTool() {
               <canvas
                 ref={overlayRef}
                 className="absolute left-0 top-0 touch-none"
-                style={{ cursor: preset.tool === "pen" ? "crosshair" : "cell" }}
+                style={{ cursor: mode === "select" ? (dragRef.current ? "grabbing" : "grab") : preset.tool === "pen" ? "crosshair" : "cell" }}
                 onPointerDown={onDown}
                 onPointerMove={onMove}
                 onPointerUp={onUp}
