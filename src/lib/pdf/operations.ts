@@ -213,6 +213,7 @@ export async function compressPdf(
  * Strokes are stored in PDF user-space units (origin bottom-left).
  * ============================================================ */
 export type Stroke = {
+  id?: string;
   pageIndex: number;
   tool: "pen" | "highlighter";
   color: { r: number; g: number; b: number };
