@@ -20,6 +20,7 @@ import { Route as ToolsOcrRouteImport } from './routes/tools/ocr'
 import { Route as ToolsMergeRouteImport } from './routes/tools/merge'
 import { Route as ToolsJpgToPdfRouteImport } from './routes/tools/jpg-to-pdf'
 import { Route as ToolsCompressRouteImport } from './routes/tools/compress'
+import { Route as ToolsAnnotateRouteImport } from './routes/tools/annotate'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -76,9 +77,15 @@ const ToolsCompressRoute = ToolsCompressRouteImport.update({
   path: '/tools/compress',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ToolsAnnotateRoute = ToolsAnnotateRouteImport.update({
+  id: '/tools/annotate',
+  path: '/tools/annotate',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/tools/annotate': typeof ToolsAnnotateRoute
   '/tools/compress': typeof ToolsCompressRoute
   '/tools/jpg-to-pdf': typeof ToolsJpgToPdfRoute
   '/tools/merge': typeof ToolsMergeRoute
@@ -92,6 +99,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/tools/annotate': typeof ToolsAnnotateRoute
   '/tools/compress': typeof ToolsCompressRoute
   '/tools/jpg-to-pdf': typeof ToolsJpgToPdfRoute
   '/tools/merge': typeof ToolsMergeRoute
@@ -106,6 +114,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/tools/annotate': typeof ToolsAnnotateRoute
   '/tools/compress': typeof ToolsCompressRoute
   '/tools/jpg-to-pdf': typeof ToolsJpgToPdfRoute
   '/tools/merge': typeof ToolsMergeRoute
@@ -121,6 +130,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/tools/annotate'
     | '/tools/compress'
     | '/tools/jpg-to-pdf'
     | '/tools/merge'
@@ -134,6 +144,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/tools/annotate'
     | '/tools/compress'
     | '/tools/jpg-to-pdf'
     | '/tools/merge'
@@ -147,6 +158,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/tools/annotate'
     | '/tools/compress'
     | '/tools/jpg-to-pdf'
     | '/tools/merge'
@@ -161,6 +173,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ToolsAnnotateRoute: typeof ToolsAnnotateRoute
   ToolsCompressRoute: typeof ToolsCompressRoute
   ToolsJpgToPdfRoute: typeof ToolsJpgToPdfRoute
   ToolsMergeRoute: typeof ToolsMergeRoute
@@ -252,11 +265,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolsCompressRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tools/annotate': {
+      id: '/tools/annotate'
+      path: '/tools/annotate'
+      fullPath: '/tools/annotate'
+      preLoaderRoute: typeof ToolsAnnotateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ToolsAnnotateRoute: ToolsAnnotateRoute,
   ToolsCompressRoute: ToolsCompressRoute,
   ToolsJpgToPdfRoute: ToolsJpgToPdfRoute,
   ToolsMergeRoute: ToolsMergeRoute,
@@ -271,3 +292,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
