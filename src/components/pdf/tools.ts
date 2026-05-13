@@ -1,4 +1,4 @@
-import { Combine, Scissors, Minimize2, RotateCw, LayoutGrid, Droplet, Hash, FileImage, Image as ImageIcon, ScanText } from "lucide-react";
+import { Combine, Scissors, Minimize2, RotateCw, LayoutGrid, Droplet, Hash, FileImage, Image as ImageIcon, ScanText, Pencil, Type } from "lucide-react";
 import type { ComponentType } from "react";
 
 export type ToolDef = {
@@ -18,6 +18,8 @@ export const TOOLS: ToolDef[] = [
   { id: "rotate", path: "/tools/rotate", i18nKey: "rotate", category: "edit", icon: RotateCw, accent: "oklch(0.68 0.18 80)" },
   { id: "watermark", path: "/tools/watermark", i18nKey: "watermark", category: "edit", icon: Droplet, accent: "oklch(0.65 0.20 320)" },
   { id: "pageNumbers", path: "/tools/page-numbers", i18nKey: "pageNumbers", category: "edit", icon: Hash, accent: "oklch(0.65 0.18 200)" },
+  { id: "annotate", path: "/tools/annotate", i18nKey: "annotate", category: "edit", icon: Pencil, accent: "oklch(0.62 0.20 350)" },
+  { id: "editText", path: "/tools/edit-text", i18nKey: "editText", category: "edit", icon: Type, accent: "oklch(0.65 0.18 110)" },
   { id: "jpgToPdf", path: "/tools/jpg-to-pdf", i18nKey: "jpgToPdf", category: "convert", icon: FileImage, accent: "oklch(0.68 0.18 60)" },
   { id: "pdfToJpg", path: "/tools/pdf-to-jpg", i18nKey: "pdfToJpg", category: "convert", icon: ImageIcon, accent: "oklch(0.65 0.18 30)" },
   { id: "ocr", path: "/tools/ocr", i18nKey: "ocr", category: "convert", icon: ScanText, accent: "oklch(0.62 0.20 290)" },
