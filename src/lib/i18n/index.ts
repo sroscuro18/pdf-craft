@@ -101,11 +101,9 @@ const resources = {
 };
 
 if (!i18n.isInitialized) {
-  const stored = typeof window !== "undefined" ? localStorage.getItem("pdf-lang") : null;
-  const browser = typeof navigator !== "undefined" && navigator.language?.startsWith("es") ? "es" : "en";
   i18n.use(initReactI18next).init({
     resources,
-    lng: stored || browser,
+    lng: "es",
     fallbackLng: "en",
     interpolation: { escapeValue: false },
   });
